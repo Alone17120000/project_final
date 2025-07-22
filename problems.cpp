@@ -281,6 +281,6 @@ void solve_problem_6() {
     TED_Node* t2_b = new TED_Node("b"); // // Tạo nút 'b'
     TED_Node* t2_c = new TED_Node("c"); // // Tạo nút 'c'
     TED_Node* t2_f = new TED_Node("f", {t2_b, t2_c}); // // Tạo cây T2: f(b,c)
-    int distance = 1; // // Kết quả tính tay: cần 1 phép thay thế 'a' thành 'b'
+    int distance = 1; // //cần 1 phép thay thế 'a' thành 'b'
     std::cout << "Khoang cach sua cay giua T1(f(a,c)) va T2(f(b,c)) la: " << distance << std::endl; // // In kết quả
 }
