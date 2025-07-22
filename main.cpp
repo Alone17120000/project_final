@@ -13,8 +13,6 @@ void print_menu() {
     std::cout << "  4. Bai toan 4: Chuyen doi bieu dien do thi" << std::endl;
     std::cout << "  5. Bai toan 5: Cac bai tap trong sach [Val21]" << std::endl;
     std::cout << "  6. Bai toan 6: Tree Edit Distance" << std::endl;
-    std::cout << "  7. Bai toan 7: Duyet cay" << std::endl;
-    std::cout << "  8. Bai toan 8-16: BFS, DFS, Dijkstra" << std::endl;
     std::cout << "  0. Thoat" << std::endl;
     std::cout << "----------------------------------------------" << std::endl;
     std::cout << "Vui long chon mot bai toan: ";
@@ -32,8 +30,6 @@ int main() {
             case 4: solve_problem_4(); break;
             case 5: solve_problem_5(); break;
             case 6: solve_problem_6(); break;
-            case 7: solve_problem_7(); break;
-            case 8: solve_graph_problems(); break;
             case 0: std::cout << "Tam biet!" << std::endl; break;
             default: std::cout << "Lua chon khong hop le. Vui long chon lai." << std::endl; break;
         }
