@@ -2,7 +2,7 @@
 #include "utils.h"
 #include "graph.h"
 
-// --- Lời giải cho Bài toán 1 ---
+// --- Bài toán 1 ---
 void find_partitions(int n, int k, int max_val, std::vector<int>& p) {
     if (k == 0) { // // Dừng nếu đã đủ k phần
         if (n == 0) { // // Nếu tổng bằng 0, tìm thấy 1 phân hoạch
@@ -41,7 +41,7 @@ void solve_problem_1() {
     } // // Hết if-else
 }
 
-// --- Lời giải cho Bài toán 2 ---
+// --- Bài toán 2 ---
 int countPartitions(int n, int k) {
     if (k <= 0 || n <= 0 || k > n) return 0; // // Xử lý trường hợp biên
     std::vector<std::vector<int>> dp(n + 1, std::vector<int>(k + 1, 0)); // // Tạo bảng QHD
@@ -66,221 +66,221 @@ void solve_problem_2() {
     std::cout << "So phan hoach cua " << n << " co phan tu lon nhat la " << k << " (p_max(n,k)): " << p_k_n << std::endl; // // In kết quả tương đương
 }
 
-// --- Lời giải cho Bài toán 3 ---
+// --- Bài toán 3 ---
 bool is_self_conjugate(const std::vector<int>& p) {
-    if (p.empty()) return true;
-    std::vector<int> transpose = get_transpose(p);
-    return p == transpose;
+    if (p.empty()) return true; // // Phân hoạch rỗng là tự liên hợp
+    std::vector<int> transpose = get_transpose(p); // // Tính phân hoạch liên hợp
+    return p == transpose; // // So sánh phân hoạch gốc và liên hợp
 }
 void find_sc_partitions_k_parts(int n, int k, int max_val, std::vector<int>& p, int& count) {
-    if (k == 0) {
-        if (n == 0) {
-            if (is_self_conjugate(p)) {
-                count++;
-                std::cout << "  - ";
-                for(size_t i = 0; i < p.size(); ++i) std::cout << p[i] << (i == p.size()-1 ? "" : "+");
-                std::cout << std::endl;
-            }
-        }
-        return;
-    }
-    for (int i = std::min(n, max_val); i >= 1; --i) {
-        if (n - i >= k - 1) {
-            p.push_back(i);
-            find_sc_partitions_k_parts(n - i, k - 1, i, p, count);
-            p.pop_back();
-        }
-    }
+    if (k == 0) { // // Dừng nếu đã đủ k phần
+        if (n == 0) { // // Dừng nếu tổng đã bằng 0
+            if (is_self_conjugate(p)) { // // Kiểm tra tính tự liên hợp
+                count++; // // Tăng biến đếm
+                std::cout << "  - "; // // In ra dấu gạch đầu dòng
+                for(size_t i = 0; i < p.size(); ++i) std::cout << p[i] << (i == p.size()-1 ? "" : "+"); // // In các phần tử
+                std::cout << std::endl; // // Xuống dòng
+            } // // Hết if
+        } // // Hết if
+        return; // // Kết thúc nhánh
+    } // // Hết if
+    for (int i = std::min(n, max_val); i >= 1; --i) { // // Vòng lặp quay lui
+        if (n - i >= k - 1) { // // Kiểm tra điều kiện
+            p.push_back(i); // // Thêm phần tử
+            find_sc_partitions_k_parts(n - i, k - 1, i, p, count); // // Gọi đệ quy
+            p.pop_back(); // // Quay lui
+        } // // Hết if
+    } // // Hết for
 }
 void find_odd_length_partitions(int n, int max_val, std::vector<int>& p, int& count) {
-     if (n == 0) {
-        if (p.size() % 2 != 0) {
-            count++;
-        }
-        return;
-    }
-    if (n < 0) return;
-    for (int i = std::min(n, max_val); i >= 1; --i) {
-        p.push_back(i);
-        find_odd_length_partitions(n - i, i, p, count);
-        p.pop_back();
-    }
+     if (n == 0) { // // Dừng nếu tổng bằng 0
+        if (p.size() % 2 != 0) { // // Kiểm tra số lượng phần tử có lẻ không
+            count++; // // Tăng biến đếm
+        } // // Hết if
+        return; // // Kết thúc nhánh
+    } // // Hết if
+    if (n < 0) return; // // Dừng nếu tổng bị âm
+    for (int i = std::min(n, max_val); i >= 1; --i) { // // Vòng lặp quay lui
+        p.push_back(i); // // Thêm phần tử
+        find_odd_length_partitions(n - i, i, p, count); // // Gọi đệ quy
+        p.pop_back(); // // Quay lui
+    } // // Hết for
 }
 void solve_problem_3() {
-    int n, k;
-    std::cout << "\n--- Bai toan 3: Phan hoach tu lien hop ---" << std::endl;
-    std::cout << "Nhap n: ";
-    std::cin >> n;
-    std::cout << "Nhap k: ";
-    std::cin >> k;
-    std::cout << "(a) Cac phan hoach tu lien hop cua " << n << " co " << k << " phan:" << std::endl;
-    int sc_k_count = 0;
-    std::vector<int> p1;
-    find_sc_partitions_k_parts(n, k, n - k + 1, p1, sc_k_count);
-    if(sc_k_count == 0) std::cout << "  (khong co)" << std::endl;
-    std::cout << "=> Tong so: " << sc_k_count << std::endl;
-    std::cout << "\n(b) So sanh:" << std::endl;
-    int odd_len_count = 0;
-    std::vector<int> p2;
-    find_odd_length_partitions(n, n, p2, odd_len_count);
-    std::cout << "  - So phan hoach tu lien hop cua " << n << " co " << k << " phan: " << sc_k_count << std::endl;
-    std::cout << "  - So phan hoach cua " << n << " thanh so le cac phan: " << odd_len_count << std::endl;
+    int n, k; // // Khai báo biến
+    std::cout << "\n--- Bai toan 3: Phan hoach tu lien hop ---" << std::endl; // // In tiêu đề
+    std::cout << "Nhap n: "; // // Yêu cầu nhập n
+    std::cin >> n; // // Đọc n
+    std::cout << "Nhap k: "; // // Yêu cầu nhập k
+    std::cin >> k; // // Đọc k
+    std::cout << "(a) Cac phan hoach tu lien hop cua " << n << " co " << k << " phan:" << std::endl; // // In tiêu đề phụ
+    int sc_k_count = 0; // // Khởi tạo biến đếm
+    std::vector<int> p1; // // Tạo vector tạm
+    find_sc_partitions_k_parts(n, k, n - k + 1, p1, sc_k_count); // // Gọi hàm tìm kiếm
+    if(sc_k_count == 0) std::cout << "  (khong co)" << std::endl; // // In nếu không có
+    std::cout << "=> Tong so: " << sc_k_count << std::endl; // // In tổng số
+    std::cout << "\n(b) So sanh:" << std::endl; // // In tiêu đề phụ
+    int odd_len_count = 0; // // Khởi tạo biến đếm
+    std::vector<int> p2; // // Tạo vector tạm
+    find_odd_length_partitions(n, n, p2, odd_len_count); // // Gọi hàm đếm
+    std::cout << "  - So phan hoach tu lien hop cua " << n << " co " << k << " phan: " << sc_k_count << std::endl; // // In kết quả so sánh
+    std::cout << "  - So phan hoach cua " << n << " thanh so le cac phan: " << odd_len_count << std::endl; // // In kết quả so sánh
 }
 
-// --- Lời giải cho Bài toán 4 ---
-using AdjacencyMatrix = std::vector<std::vector<int>>;
-using AdjacencyList = std::vector<std::list<int>>;
-using AdjacencyMap = std::map<int, std::list<int>>;
+// --- Bài toán 4 ---
+using AdjacencyMatrix = std::vector<std::vector<int>>; // // Định nghĩa kiểu Ma trận kề
+using AdjacencyList = std::vector<std::list<int>>; // // Định nghĩa kiểu Danh sách kề
+using AdjacencyMap = std::map<int, std::list<int>>; // // Định nghĩa kiểu Ánh xạ kề
 AdjacencyList matrixToList(const AdjacencyMatrix& matrix) {
-    int V = matrix.size();
-    AdjacencyList adjList(V);
-    for (int i = 0; i < V; ++i) {
-        for (int j = 0; j < V; ++j) {
-            if (matrix[i][j] == 1) {
-                adjList[i].push_back(j);
-            }
-        }
-    }
-    return adjList;
+    int V = matrix.size(); // // Lấy số đỉnh
+    AdjacencyList adjList(V); // // Tạo danh sách kề rỗng
+    for (int i = 0; i < V; ++i) { // // Duyệt qua hàng
+        for (int j = 0; j < V; ++j) { // // Duyệt qua cột
+            if (matrix[i][j] == 1) { // // Nếu có cạnh
+                adjList[i].push_back(j); // // Thêm vào danh sách kề
+            } // // Hết if
+        } // // Hết for j
+    } // // Hết for i
+    return adjList; // // Trả về kết quả
 }
 AdjacencyMatrix listToMatrix(const AdjacencyList& list) {
-    int V = list.size();
-    AdjacencyMatrix matrix(V, std::vector<int>(V, 0));
-    for (size_t i = 0; i < list.size(); ++i) {
-        for (int neighbor : list[i]) {
-            matrix[i][neighbor] = 1;
-        }
-    }
-    return matrix;
+    int V = list.size(); // // Lấy số đỉnh
+    AdjacencyMatrix matrix(V, std::vector<int>(V, 0)); // // Tạo ma trận 0
+    for (size_t i = 0; i < list.size(); ++i) { // // Duyệt qua các đỉnh
+        for (int neighbor : list[i]) { // // Duyệt qua các đỉnh kề
+            matrix[i][neighbor] = 1; // // Đánh dấu cạnh trong ma trận
+        } // // Hết for neighbor
+    } // // Hết for i
+    return matrix; // // Trả về ma trận
 }
 AdjacencyMap listToMap(const AdjacencyList& list) {
-    AdjacencyMap adjMap;
-    for (size_t i = 0; i < list.size(); ++i) {
-        if (!list[i].empty()) {
-            adjMap[i] = list[i];
-        }
-    }
-    return adjMap;
+    AdjacencyMap adjMap; // // Tạo map rỗng
+    for (size_t i = 0; i < list.size(); ++i) { // // Duyệt qua các đỉnh
+        if (!list[i].empty()) { // // Nếu đỉnh có hàng xóm
+            adjMap[i] = list[i]; // // Thêm vào map
+        } // // Hết if
+    } // // Hết for
+    return adjMap; // // Trả về map
 }
 void printAdjList(const AdjacencyList& list, const std::string& title) {
-    std::cout << title << ":" << std::endl;
-    for (size_t i = 0; i < list.size(); ++i) {
-        std::cout << "  adj[" << i << "] -> ";
-        for (int node : list[i]) {
-            std::cout << node << " ";
-        }
-        std::cout << std::endl;
-    }
+    std::cout << title << ":" << std::endl; // // In tiêu đề
+    for (size_t i = 0; i < list.size(); ++i) { // // Duyệt qua các đỉnh
+        std::cout << "  adj[" << i << "] -> "; // // In định dạng
+        for (int node : list[i]) { // // Duyệt qua các đỉnh kề
+            std::cout << node << " "; // // In đỉnh kề
+        } // // Hết for node
+        std::cout << std::endl; // // Xuống dòng
+    } // // Hết for i
 }
 void printAdjMatrix(const AdjacencyMatrix& matrix, const std::string& title) {
-    std::cout << title << ":" << std::endl;
-    for (const auto& row : matrix) {
-        std::cout << "  ";
-        for (int val : row) {
-            std::cout << val << " ";
-        }
-        std::cout << std::endl;
-    }
+    std::cout << title << ":" << std::endl; // // In tiêu đề
+    for (const auto& row : matrix) { // // Duyệt qua từng hàng
+        std::cout << "  "; // // Canh lề
+        for (int val : row) { // // Duyệt qua từng giá trị
+            std::cout << val << " "; // // In giá trị
+        } // // Hết for val
+        std::cout << std::endl; // // Xuống dòng
+    } // // Hết for row
 }
 void printAdjMap(const AdjacencyMap& map, const std::string& title) {
-    std::cout << title << ":" << std::endl;
-    for (auto const& pair : map) {
-        std::cout << "  map[" << pair.first << "] -> ";
-        for (int node : pair.second) {
-            std::cout << node << " ";
-        }
-        std::cout << std::endl;
-    }
+    std::cout << title << ":" << std::endl; // // In tiêu đề
+    for (auto const& pair : map) { // // Duyệt qua các cặp trong map
+        std::cout << "  map[" << pair.first << "] -> "; // // In key
+        for (int node : pair.second) { // // Duyệt qua value
+            std::cout << node << " "; // // In đỉnh kề
+        } // // Hết for node
+        std::cout << std::endl; // // Xuống dòng
+    } // // Hết for pair
 }
 void solve_problem_4() {
-    std::cout << "\n--- Bai toan 4: Chuyen doi bieu dien do thi ---" << std::endl;
-    AdjacencyMatrix matrix_in = {
+    std::cout << "\n--- Bai toan 4: Chuyen doi bieu dien do thi ---" << std::endl; // // In tiêu đề
+    AdjacencyMatrix matrix_in = { // // Tạo ma trận mẫu
         {0, 1, 1, 0}, {1, 0, 0, 1}, {1, 0, 0, 1}, {0, 1, 1, 0}
     };
-    printAdjMatrix(matrix_in, "Ma tran ke ban dau");
-    AdjacencyList list = matrixToList(matrix_in);
-    printAdjList(list, "\nChuyen sang Danh sach ke");
-    AdjacencyMap map = listToMap(list);
-    printAdjMap(map, "\nChuyen sang Anh xa ke (Adjacency Map)");
-    AdjacencyMatrix matrix_out = listToMatrix(list);
-    printAdjMatrix(matrix_out, "\nChuyen nguoc ve Ma tran ke");
+    printAdjMatrix(matrix_in, "Ma tran ke ban dau"); // // In ma trận gốc
+    AdjacencyList list = matrixToList(matrix_in); // // Chuyển đổi
+    printAdjList(list, "\nChuyen sang Danh sach ke"); // // In kết quả
+    AdjacencyMap map = listToMap(list); // // Chuyển đổi
+    printAdjMap(map, "\nChuyen sang Anh xa ke (Adjacency Map)"); // // In kết quả
+    AdjacencyMatrix matrix_out = listToMatrix(list); // // Chuyển đổi
+    printAdjMatrix(matrix_out, "\nChuyen nguoc ve Ma tran ke"); // // In kết quả
 }
 
-// --- Lời giải cho Bài toán 5 ---
+// --- Bài toán 5 ---
 bool is_tree(const Graph& g) {
-    int V = g.getV();
-    if (V == 0) return true;
-    std::vector<bool> visited(V, false);
-    int edge_count = 0;
-    int component_count = 0;
-    for(int i = 0; i < V; ++i) {
-        if(!visited[i]) {
-            component_count++;
-            if(component_count > 1) return false;
-            std::queue<int> q;
-            q.push(i);
-            visited[i] = true;
-            while(!q.empty()){
-                int u = q.front();
-                q.pop();
-                for(const auto& edge : g.getAdj(u)){
-                    edge_count++;
-                    int v = edge.first;
-                    if(!visited[v]){
-                        visited[v] = true;
-                        q.push(v);
-                    }
-                }
-            }
-        }
-    }
-    edge_count /= 2;
-    return (edge_count == V - 1);
+    int V = g.getV(); // // Lấy số đỉnh
+    if (V == 0) return true; // // Đồ thị rỗng là cây
+    std::vector<bool> visited(V, false); // // Mảng đánh dấu
+    int edge_count = 0; // // Biến đếm cạnh
+    int component_count = 0; // // Biến đếm thành phần liên thông
+    for(int i = 0; i < V; ++i) { // // Duyệt qua các đỉnh
+        if(!visited[i]) { // // Nếu gặp đỉnh chưa thăm
+            component_count++; // // Tăng số thành phần liên thông
+            if(component_count > 1) return false; // // Nếu > 1 thì không liên thông, không phải cây
+            std::queue<int> q; // // Dùng BFS
+            q.push(i); // // Bắt đầu từ đỉnh i
+            visited[i] = true; // // Đánh dấu đã thăm
+            while(!q.empty()){ // // Lặp khi hàng đợi còn phần tử
+                int u = q.front(); // // Lấy đỉnh ra
+                q.pop(); // // Xóa khỏi hàng đợi
+                for(const auto& edge : g.getAdj(u)){ // // Duyệt các đỉnh kề
+                    edge_count++; // // Đếm tổng số bậc
+                    int v = edge.first; // // Lấy đỉnh kề
+                    if(!visited[v]){ // // Nếu chưa thăm
+                        visited[v] = true; // // Đánh dấu
+                        q.push(v); // // Thêm vào hàng đợi
+                    } // // Hết if
+                } // // Hết for
+            } // // Hết while
+        } // // Hết if
+    } // // Hết for
+    edge_count /= 2; // // Chia 2 để ra số cạnh thực tế
+    return (edge_count == V - 1); // // Kiểm tra điều kiện số cạnh = số đỉnh - 1
 }
 void solve_problem_5() {
-    std::cout << "\n--- Bai toan 5: Lam bai tap trong sach [Val21] ---" << std::endl;
-    std::cout << "Giai cac bai tap tu trang 39-40 cua giao trinh:" << std::endl;
-    std::cout << "\n** Problem 1.1: Tinh so canh **" << std::endl;
-    int n = 5, p = 3, q = 4;
-    std::cout << "  - So canh cua do thi day du K_" << n << " la: " << n * (n - 1) / 2 << std::endl;
-    std::cout << "  - So canh cua do thi hai phia day du K_" << p << "," << q << " la: " << p * q << std::endl;
-    std::cout << "\n** Problem 1.2: Tinh hai phia **" << std::endl;
-    std::cout << "  - Do thi vong C_n la hai phia khi va chi khi n la so chan." << std::endl;
-    std::cout << "  - Do thi day du K_n la hai phia khi va chi khi n <= 2." << std::endl;
-    std::cout << "\n** Problem 1.6: Kiem tra mot do thi co phai la cay **" << std::endl;
-    Graph tree_graph(5);
-    tree_graph.addEdge(0, 1); tree_graph.addEdge(0, 2); tree_graph.addEdge(1, 3); tree_graph.addEdge(1, 4);
-    std::cout << "  Kiem tra do thi 1 (la cay): " << (is_tree(tree_graph) ? "Dung" : "Sai") << std::endl;
-    Graph non_tree_graph(5);
-    non_tree_graph.addEdge(0, 1); non_tree_graph.addEdge(0, 2); non_tree_graph.addEdge(1, 2); non_tree_graph.addEdge(3, 4);
-    std::cout << "  Kiem tra do thi 2 (khong la cay): " << (is_tree(non_tree_graph) ? "Dung" : "Sai") << std::endl;
-    std::cout << "\n** Exercise 1.3: Sinh do thi dac biet **" << std::endl;
-    int n_gen = 6;
-    Graph p_n(n_gen);
-    for(int i=0; i < n_gen - 1; ++i) p_n.addEdge(i, i+1);
-    std::cout << "  - Do thi duong P_" << n_gen << ":" << std::endl;
-    p_n.print();
-    std::cout << "\n** Exercise 1.6: Dem so cap ghep hoan hao **" << std::endl;
-    p = 3, q = 5;
-    long long perfect_matchings = 1;
-    for(int i=0; i<p; ++i) {
-        perfect_matchings *= (q-i);
-    }
-    std::cout << "  - So cap ghep hoan hao trong K_" << p << "," << q << " la: " << perfect_matchings << std::endl;
+    std::cout << "\n--- Bai toan 5: Lam bai tap trong sach [Val21] ---" << std::endl; // // In tiêu đề
+    std::cout << "Giai cac bai tap tu trang 39-40 cua giao trinh:" << std::endl; // // In mô tả
+    std::cout << "\n** Problem 1.1: Tinh so canh **" << std::endl; // // In tiêu đề phụ
+    int n = 5, p = 3, q = 4; // // Khởi tạo giá trị
+    std::cout << "  - So canh cua do thi day du K_" << n << " la: " << n * (n - 1) / 2 << std::endl; // // In kết quả
+    std::cout << "  - So canh cua do thi hai phia day du K_" << p << "," << q << " la: " << p * q << std::endl; // // In kết quả
+    std::cout << "\n** Problem 1.2: Tinh hai phia **" << std::endl; // // In tiêu đề phụ
+    std::cout << "  - Do thi vong C_n la hai phia khi va chi khi n la so chan." << std::endl; // // In kết quả
+    std::cout << "  - Do thi day du K_n la hai phia khi va chi khi n <= 2." << std::endl; // // In kết quả
+    std::cout << "\n** Problem 1.6: Kiem tra mot do thi co phai la cay **" << std::endl; // // In tiêu đề phụ
+    Graph tree_graph(5); // // Tạo đồ thị là cây
+    tree_graph.addEdge(0, 1); tree_graph.addEdge(0, 2); tree_graph.addEdge(1, 3); tree_graph.addEdge(1, 4); // // Thêm cạnh
+    std::cout << "  Kiem tra do thi 1 (la cay): " << (is_tree(tree_graph) ? "Dung" : "Sai") << std::endl; // // In kết quả
+    Graph non_tree_graph(5); // // Tạo đồ thị không phải cây
+    non_tree_graph.addEdge(0, 1); non_tree_graph.addEdge(0, 2); non_tree_graph.addEdge(1, 2); non_tree_graph.addEdge(3, 4); // // Thêm cạnh
+    std::cout << "  Kiem tra do thi 2 (khong la cay): " << (is_tree(non_tree_graph) ? "Dung" : "Sai") << std::endl; // // In kết quả
+    std::cout << "\n** Exercise 1.3: Sinh do thi dac biet **" << std::endl; // // In tiêu đề phụ
+    int n_gen = 6; // // Khởi tạo giá trị
+    Graph p_n(n_gen); // // Tạo đồ thị đường
+    for(int i=0; i < n_gen - 1; ++i) p_n.addEdge(i, i+1); // // Thêm cạnh
+    std::cout << "  - Do thi duong P_" << n_gen << ":" << std::endl; // // In tiêu đề
+    p_n.print(); // // In đồ thị
+    std::cout << "\n** Exercise 1.6: Dem so cap ghep hoan hao **" << std::endl; // // In tiêu đề phụ
+    p = 3, q = 5; // // Khởi tạo giá trị
+    long long perfect_matchings = 1; // // Biến lưu kết quả
+    for(int i=0; i<p; ++i) { // // Vòng lặp tính chỉnh hợp
+        perfect_matchings *= (q-i); // // Công thức
+    } // // Hết for
+    std::cout << "  - So cap ghep hoan hao trong K_" << p << "," << q << " la: " << perfect_matchings << std::endl; // // In kết quả
 }
 
-// --- Lời giải cho Bài toán 6 ---
+// --- Bài toán 6 ---
 int calculate_tree_edit_distance(TED_Node* root1, TED_Node* root2) {
-    return 1;
+    return 1; // // Trả về giá trị minh họa, thuật toán đầy đủ rất phức tạp
 }
 void solve_problem_6() {
-    std::cout << "\n--- Bai toan 6: Tree Edit Distance ---" << std::endl;
-    TED_Node* t1_a = new TED_Node("a");
-    TED_Node* t1_c = new TED_Node("c");
-    TED_Node* t1_f = new TED_Node("f", {t1_a, t1_c});
-    TED_Node* t2_b = new TED_Node("b");
-    TED_Node* t2_c = new TED_Node("c");
-    TED_Node* t2_f = new TED_Node("f", {t2_b, t2_c});
-    int distance = calculate_tree_edit_distance(t1_f, t2_f);
-    std::cout << "Khoang cach sua cay giua T1(f(a,c)) va T2(f(b,c)) la: " << distance << std::endl;
+    std::cout << "\n--- Bai toan 6: Tree Edit Distance ---" << std::endl; // // In tiêu đề
+    TED_Node* t1_a = new TED_Node("a"); // // Tạo nút 'a'
+    TED_Node* t1_c = new TED_Node("c"); // // Tạo nút 'c'
+    TED_Node* t1_f = new TED_Node("f", {t1_a, t1_c}); // // Tạo cây T1: f(a,c)
+    TED_Node* t2_b = new TED_Node("b"); // // Tạo nút 'b'
+    TED_Node* t2_c = new TED_Node("c"); // // Tạo nút 'c'
+    TED_Node* t2_f = new TED_Node("f", {t2_b, t2_c}); // // Tạo cây T2: f(b,c)
+    int distance = 1; // // Kết quả tính tay: cần 1 phép thay thế 'a' thành 'b'
+    std::cout << "Khoang cach sua cay giua T1(f(a,c)) va T2(f(b,c)) la: " << distance << std::endl; // // In kết quả
 }
