@@ -1,4 +1,5 @@
 #include "graph.h"
+#include <iomanip> // De format output
 
 Graph::Graph(int vertices, bool directed) : V(vertices), adj(vertices), is_directed(directed) {}
 
@@ -9,6 +10,7 @@ void Graph::addEdge(int u, int v, int w) {
     if (!is_directed) {
         adj[v].push_back({u, w});
     }
+    edge_list.push_back({u, v, w});
 }
 
 const std::list<std::pair<int, int>>& Graph::getAdj(int u) const {
@@ -66,27 +68,114 @@ void Graph::DFS(int s) {
     std::cout << std::endl;
 }
 
+// --- Cac ham phan tich moi ---
+void Graph::isConnected_util(int u, std::vector<bool>& visited) {
+    visited[u] = true;
+    for (const auto& edge : adj[u]) {
+        if (!visited[edge.first]) {
+            isConnected_util(edge.first, visited);
+        }
+    }
+}
+
+bool Graph::isConnected() {
+    if (V == 0) return true;
+    std::vector<bool> visited(V, false);
+    isConnected_util(0, visited);
+    for (int i = 0; i < V; i++) {
+        if (!visited[i]) return false;
+    }
+    return true;
+}
+
+void Graph::analyzeGraph() {
+    std::cout << "\n--- Phan tich do thi ---" << std::endl;
+    std::cout << "So dinh: " << V << std::endl;
+    std::cout << "So canh: " << edge_list.size() << std::endl;
+    std::cout << "Tinh lien thong: " << (isConnected() ? "Lien thong" : "Khong lien thong") << std::endl;
+
+    bool has_parallel = false;
+    std::map<std::pair<int, int>, int> edge_counts;
+    for (const auto& edge : edge_list) {
+        int u = std::min(edge.u, edge.v);
+        int v = std::max(edge.u, edge.v);
+        edge_counts[{u, v}]++;
+        if (edge_counts[{u, v}] > 1) {
+            has_parallel = true;
+        }
+    }
+    std::cout << "Canh song song: " << (has_parallel ? "Co" : "Khong") << std::endl;
+
+    bool has_loop = false;
+    for (const auto& edge : edge_list) {
+        if (edge.u == edge.v) {
+            has_loop = true;
+            break;
+        }
+    }
+    std::cout << "Canh khuyen: " << (has_loop ? "Co" : "Khong") << std::endl;
+}
+
+// --- Ham Dijkstra duoc viet lai ---
+std::string Graph::getPath(int src, int dest, const std::vector<int>& prev) {
+    if (prev[dest] == -1 && dest != src) return "N/A";
+    std::string path_str = "";
+    int current = dest;
+    while (current != -1) {
+        path_str = std::to_string(current) + (path_str.empty() ? "" : " <- ") + path_str;
+        current = prev[current];
+    }
+    return path_str;
+}
+
 void Graph::dijkstra(int src) {
     std::cout << "\n--- Thuat toan Dijkstra (bat dau tu " << src << ") ---" << std::endl;
-    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
     std::vector<int> dist(V, INF);
-    pq.push({0, src});
+    std::vector<int> prev(V, -1);
+    std::vector<bool> visited(V, false);
+    std::priority_queue<std::pair<int, int>, std::vector<std::pair<int, int>>, std::greater<std::pair<int, int>>> pq;
+
     dist[src] = 0;
+    pq.push({0, src});
+
+    int step = 0;
     while (!pq.empty()) {
-        int d = pq.top().first;
         int u = pq.top().second;
         pq.pop();
-        if (d > dist[u]) continue;
+
+        if (visited[u]) continue;
+        visited[u] = true;
+        step++;
+
+        std::cout << "\n--- BUOC " << step << ": Duyet dinh " << u << " (khoang cach: " << dist[u] << ") ---" << std::endl;
+        std::cout << std::left << std::setw(10) << "Dinh ke"
+                  << std::setw(30) << "Canh di toi dinh dang xet"
+                  << std::setw(15) << "Trang thai"
+                  << std::setw(20) << "Duong di"
+                  << std::setw(10) << "Do dai" << std::endl;
+        std::cout << std::string(85, '-') << std::endl;
+        
+        for (int i = 0; i < V; ++i) {
+             std::cout << std::left << std::setw(10) << i
+                       << std::setw(30) << (prev[i] != -1 ? (std::to_string(prev[i]) + " -> " + std::to_string(i)) : "N/A")
+                       << std::setw(15) << (visited[i] ? "Da duyet" : "Chua duyet")
+                       << std::setw(20) << getPath(src, i, prev)
+                       << std::setw(10) << (dist[i] == INF ? "INF" : std::to_string(dist[i])) << std::endl;
+        }
+
         for (const auto& edge : adj[u]) {
             int v = edge.first;
             int weight = edge.second;
-            if (dist[v] > dist[u] + weight) {
+            if (!visited[v] && dist[u] != INF && dist[u] + weight < dist[v]) {
                 dist[v] = dist[u] + weight;
+                prev[v] = u;
                 pq.push({dist[v], v});
             }
         }
     }
-    std::cout << "Khoang cach ngan nhat:" << std::endl;
-    for (int i = 0; i < V; ++i)
-        std::cout << "  Tu " << src << " toi " << i << " la " << (dist[i] == INF ? "INF" : std::to_string(dist[i])) << std::endl;
+    
+    std::cout << "\n--- KET QUA CUOI CUNG ---" << std::endl;
+    for(int i=0; i<V; ++i){
+        std::cout << "Duong di ngan nhat tu " << src << " toi " << i << " la: " << getPath(src, i, prev) << " (Do dai: " << dist[i] << ")" << std::endl;
+    }
 }

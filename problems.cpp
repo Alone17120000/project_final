@@ -375,22 +375,42 @@ void solve_problem_13() { // Hàm chính bài toán 13.
 }
 
 // --- Bài toán 14 ---
-void solve_problem_14() { // Hàm chính bài toán 14.
-    std::cout << "\n--- Bai toan 14: Dijkstra tren Do thi don ---" << std::endl; // In tiêu đề.
-    Graph g(4); g.addEdge(0, 1, 1); g.addEdge(0, 3, 4); g.addEdge(1, 2, 2); g.addEdge(2, 3, 1); // Tạo đồ thị đơn có trọng số.
-    g.print(); g.dijkstra(0); // In đồ thị và chạy Dijkstra.
+void solve_problem_14() {
+    std::cout << "\n--- Bai toan 14: Dijkstra tren Do thi don ---" << std::endl; // In tiêu đề bài toán.
+    Graph g(9); // Tạo một đồ thị có 9 đỉnh (từ 0 đến 8).
+
+    // Thêm các cạnh có trọng số vào đồ thị để tạo thành một đồ thị đơn.
+    g.addEdge(0, 1, 4); g.addEdge(0, 7, 8); // Thêm cạnh (0,1) trọng số 4, (0,7) trọng số 8.
+    g.addEdge(1, 2, 8); g.addEdge(1, 7, 11); // Thêm cạnh (1,2) trọng số 8, (1,7) trọng số 11.
+    g.addEdge(2, 3, 7); g.addEdge(2, 5, 4); g.addEdge(2, 8, 2); // ...
+    g.addEdge(3, 4, 9); g.addEdge(3, 5, 14);
+    g.addEdge(4, 5, 10);
+    g.addEdge(5, 6, 2);
+    g.addEdge(6, 7, 1); g.addEdge(6, 8, 6);
+    g.addEdge(7, 8, 7);
+
+    g.analyzeGraph(); // Phân tích và in thông tin cơ bản của đồ thị.
+    g.dijkstra(0); // Chạy thuật toán Dijkstra tìm đường đi ngắn nhất từ đỉnh 0.
 }
 
 // --- Bài toán 15 ---
-void solve_problem_15() { // Hàm chính bài toán 15.
-    std::cout << "\n--- Bai toan 15: Dijkstra tren Da do thi ---" << std::endl; // In tiêu đề.
-    Graph g(3); g.addEdge(0, 1, 5); g.addEdge(0, 1, 10); g.addEdge(1, 2, 2); // Tạo đa đồ thị có trọng số.
-    g.print(); g.dijkstra(0); // In đồ thị và chạy Dijkstra.
+void solve_problem_15() {
+    std::cout << "\n--- Bai toan 15: Dijkstra tren Da do thi ---" << std::endl; // In tiêu đề bài toán.
+    Graph g(3); // Tạo đồ thị có 3 đỉnh.
+    g.addEdge(0, 1, 5); // Thêm cạnh (0,1) với trọng số 5.
+    g.addEdge(0, 1, 10); // Thêm một cạnh (0,1) nữa với trọng số 10 (tạo đa đồ thị).
+    g.addEdge(1, 2, 2); // Thêm cạnh (1,2) với trọng số 2.
+    g.analyzeGraph(); // Phân tích và in thông tin đồ thị.
+    g.dijkstra(0); // Chạy Dijkstra (sẽ tự động chọn cạnh (0,1) có trọng số nhỏ hơn là 5).
 }
 
 // --- Bài toán 16 ---
-void solve_problem_16() { // Hàm chính bài toán 16.
-    std::cout << "\n--- Bai toan 16: Dijkstra tren Do thi tong quat ---" << std::endl; // In tiêu đề.
-    Graph g(3); g.addEdge(0, 1, 5); g.addEdge(1, 1, 10); g.addEdge(1, 2, 2); // Tạo đồ thị có khuyên và trọng số.
-    g.print(); g.dijkstra(0); // In đồ thị và chạy Dijkstra.
+void solve_problem_16() {
+    std::cout << "\n--- Bai toan 16: Dijkstra tren Do thi tong quat ---" << std::endl; // In tiêu đề bài toán.
+    Graph g(3); // Tạo đồ thị có 3 đỉnh.
+    g.addEdge(0, 1, 5); // Thêm cạnh (0,1) với trọng số 5.
+    g.addEdge(1, 1, 10); // Thêm một khuyên (cạnh nối đỉnh 1 với chính nó) trọng số 10.
+    g.addEdge(1, 2, 2); // Thêm cạnh (1,2) với trọng số 2.
+    g.analyzeGraph(); // Phân tích và in thông tin đồ thị.
+    g.dijkstra(0); // Chạy Dijkstra (khuyên thường không ảnh hưởng đến đường đi ngắn nhất).
 }
