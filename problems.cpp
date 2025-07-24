@@ -67,35 +67,85 @@ void solve_problem_2() { // Hàm chính cho bài toán 2.
 }
 
 // --- Bài toán 3 ---
-bool is_self_conjugate(const std::vector<int>& p) { // Hàm kiểm tra phân hoạch tự liên hợp.
-    if (p.empty()) return true; // Phân hoạch rỗng là tự liên hợp.
-    std::vector<int> transpose = get_transpose(p); // Lấy phân hoạch chuyển vị.
-    return p == transpose; // So sánh với phân hoạch gốc.
+bool is_self_conjugate(const std::vector<int>& p) {
+    if (p.empty()) return true;
+    std::vector<int> transpose = get_transpose(p);
+    return p == transpose;
 }
-void find_odd_distinct_partitions(int n, int max_odd, std::vector<int>& p, int& count) { // Hàm tìm phân hoạch thành các phần tử lẻ, phân biệt.
-    if (n == 0) { // Nếu tổng bằng 0, tìm thấy 1 phân hoạch.
-        count++; // Tăng biến đếm.
-        return; // Dừng.
+void find_sc_partitions_k_parts(int n, int k, int max_val, std::vector<int>& p, int& count) {
+    if (k == 0) {
+        if (n == 0) {
+            if (is_self_conjugate(p)) {
+                count++;
+                std::cout << "  - ";
+                for(size_t i = 0; i < p.size(); ++i) std::cout << p[i] << (i == p.size()-1 ? "" : "+");
+                std::cout << std::endl;
+            }
+        }
+        return;
     }
-    if (n < 0 || max_odd <= 0) return; // Điều kiện dừng không hợp lệ.
-    for (int i = max_odd; i >= 1; i -= 2) { // Lặp qua các số lẻ giảm dần.
-        if (n - i >= 0) { // Nếu có thể chọn i.
-            p.push_back(i); // Chọn i.
-            find_odd_distinct_partitions(n - i, i - 2, p, count); // Đệ quy với phần còn lại.
-            p.pop_back(); // Quay lui.
+    for (int i = std::min(n, max_val); i >= 1; --i) {
+        if (n - i >= k - 1) {
+            p.push_back(i);
+            find_sc_partitions_k_parts(n - i, k - 1, i, p, count);
+            p.pop_back();
         }
     }
 }
-void solve_problem_3() { // Hàm chính cho bài toán 3.
-    int n; // Khai báo biến n.
-    std::cout << "\n--- Bai toan 3: Phan hoach tu lien hop ---" << std::endl; // In tiêu đề.
-    std::cout << "Nhap n: "; // Yêu cầu nhập n.
-    std::cin >> n; // Đọc n.
-    int sc_count = 0; // Biến đếm.
-    std::vector<int> p; // Vector tạm.
-    find_odd_distinct_partitions(n, n % 2 == 0 ? n - 1 : n, p, sc_count); // Bắt đầu tìm kiếm.
-    std::cout << "So phan hoach tu lien hop cua " << n << " la: " << sc_count << std::endl; // In kết quả.
+void find_odd_length_partitions(int n, int max_val, std::vector<int>& p, int& count) {
+     if (n == 0) {
+        if (p.size() % 2 != 0) {
+            count++;
+        }
+        return;
+    }
+    if (n < 0) return;
+    for (int i = std::min(n, max_val); i >= 1; --i) {
+        p.push_back(i);
+        find_odd_length_partitions(n - i, i, p, count);
+        p.pop_back();
+    }
 }
+void find_odd_distinct_partitions(int n, int max_odd, std::vector<int>& p, int& count) {
+    if (n == 0) {
+        count++;
+        return;
+    }
+    if (n < 0 || max_odd <= 0) return;
+    for (int i = max_odd; i >= 1; i -= 2) {
+        if (n - i >= 0) {
+            p.push_back(i);
+            find_odd_distinct_partitions(n - i, i - 2, p, count);
+            p.pop_back();
+        }
+    }
+}
+void solve_problem_3() {
+    int n, k;
+    std::cout << "\n--- Bai toan 3: Phan hoach tu lien hop ---" << std::endl;
+    std::cout << "Nhap n: ";
+    std::cin >> n;
+    std::cout << "Nhap k: ";
+    std::cin >> k;
+    std::cout << "(a) Cac phan hoach tu lien hop cua " << n << " co " << k << " phan:" << std::endl;
+    int sc_k_count = 0;
+    std::vector<int> p1;
+    find_sc_partitions_k_parts(n, k, n - k + 1, p1, sc_k_count);
+    if(sc_k_count == 0) std::cout << "  (khong co)" << std::endl;
+    std::cout << "=> Tong so: " << sc_k_count << std::endl;
+    std::cout << "\n(b) So sanh:" << std::endl;
+    int odd_len_count = 0;
+    std::vector<int> p2;
+    find_odd_length_partitions(n, n, p2, odd_len_count);
+    std::cout << "  - So phan hoach tu lien hop cua " << n << " co " << k << " phan: " << sc_k_count << std::endl;
+    std::cout << "  - So phan hoach cua " << n << " thanh so le cac phan: " << odd_len_count << std::endl;
+    std::cout << "\n(c) So phan hoach tu lien hop (theo dinh ly):" << std::endl;
+    int odd_distinct_count = 0;
+    std::vector<int> p3;
+    find_odd_distinct_partitions(n, n % 2 == 0 ? n - 1 : n, p3, odd_distinct_count);
+    std::cout << "  So phan hoach cua " << n << " thanh cac phan tu le va phan biet la: " << odd_distinct_count << std::endl;
+}
+
 
 // --- Bài toán 4 ---
 using AdjacencyMatrix = std::vector<std::vector<int>>; // Định nghĩa kiểu cho ma trận kề.
