@@ -18,7 +18,7 @@ private:
     bool is_directed;
 
     // Ham phu tro
-    void DFS_util(int u, std::vector<bool>& visited);
+    void DFS_util(int u, std::vector<bool>& visited, std::vector<int>& prev, int& step, int s);
     void isConnected_util(int u, std::vector<bool>& visited);
     std::string getPath(int src, int dest, const std::vector<int>& prev);
 

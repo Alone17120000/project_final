@@ -336,42 +336,42 @@ void solve_problem_7() { // Hàm chính bài toán 7.
 void solve_problem_8() { // Hàm chính bài toán 8.
     std::cout << "\n--- Bai toan 8: BFS tren Do thi don ---" << std::endl; // In tiêu đề.
     Graph g(4); g.addEdge(0, 1); g.addEdge(0, 2); g.addEdge(1, 3); // Tạo đồ thị đơn.
-    g.print(); g.BFS(0); // In đồ thị và chạy BFS.
+    g.analyzeGraph(); g.BFS(0); // In đồ thị và chạy BFS.
 }
 
 // --- Bài toán 9 ---
 void solve_problem_9() { // Hàm chính bài toán 9.
     std::cout << "\n--- Bai toan 9: BFS tren Da do thi ---" << std::endl; // In tiêu đề.
     Graph g(3); g.addEdge(0, 1); g.addEdge(0, 1); g.addEdge(1, 2); // Tạo đa đồ thị.
-    g.print(); g.BFS(0); // In đồ thị và chạy BFS.
+    g.analyzeGraph(); g.BFS(0); // In đồ thị và chạy BFS.
 }
 
 // --- Bài toán 10 ---
 void solve_problem_10() { // Hàm chính bài toán 10.
     std::cout << "\n--- Bai toan 10: BFS tren Do thi tong quat ---" << std::endl; // In tiêu đề.
     Graph g(3); g.addEdge(0, 1); g.addEdge(1, 1); g.addEdge(1, 2); // Tạo đồ thị có khuyên.
-    g.print(); g.BFS(0); // In đồ thị và chạy BFS.
+    g.analyzeGraph(); g.BFS(0); // In đồ thị và chạy BFS.
 }
 
 // --- Bài toán 11 ---
 void solve_problem_11() { // Hàm chính bài toán 11.
     std::cout << "\n--- Bai toan 11: DFS tren Do thi don ---" << std::endl; // In tiêu đề.
     Graph g(4); g.addEdge(0, 1); g.addEdge(0, 2); g.addEdge(1, 3); // Tạo đồ thị đơn.
-    g.print(); g.DFS(0); // In đồ thị và chạy DFS.
+    g.analyzeGraph(); g.DFS(0); // In đồ thị và chạy DFS.
 }
 
 // --- Bài toán 12 ---
 void solve_problem_12() { // Hàm chính bài toán 12.
     std::cout << "\n--- Bai toan 12: DFS tren Da do thi ---" << std::endl; // In tiêu đề.
     Graph g(3); g.addEdge(0, 1); g.addEdge(0, 1); g.addEdge(1, 2); // Tạo đa đồ thị.
-    g.print(); g.DFS(0); // In đồ thị và chạy DFS.
+    g.analyzeGraph(); g.DFS(0); // In đồ thị và chạy DFS.
 }
 
 // --- Bài toán 13 ---
 void solve_problem_13() { // Hàm chính bài toán 13.
     std::cout << "\n--- Bai toan 13: DFS tren Do thi tong quat ---" << std::endl; // In tiêu đề.
     Graph g(3); g.addEdge(0, 1); g.addEdge(1, 1); g.addEdge(1, 2); // Tạo đồ thị có khuyên.
-    g.print(); g.DFS(0); // In đồ thị và chạy DFS.
+    g.analyzeGraph(); g.DFS(0); // In đồ thị và chạy DFS.
 }
 
 // --- Bài toán 14 ---

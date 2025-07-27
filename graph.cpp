@@ -27,35 +27,76 @@ void Graph::print() const {
     }
 }
 
+// --- Ham BFS duoc viet lai chi tiet ---
 void Graph::BFS(int s) {
     std::cout << "\n--- Thuat toan BFS (bat dau tu " << s << ") ---" << std::endl;
+    std::vector<int> dist(V, INF);
+    std::vector<int> prev(V, -1);
     std::vector<bool> visited(V, false);
     std::queue<int> queue;
+
+    dist[s] = 0;
     visited[s] = true;
     queue.push(s);
-    std::cout << "Thu tu duyet: ";
+
+    int step = 0;
     while (!queue.empty()) {
         int u = queue.front();
-        std::cout << u << " ";
         queue.pop();
+        step++;
+
+        std::cout << "\n--- BUOC " << step << ": Duyet dinh " << u << " (khoang cach: " << (dist[u] == INF ? "INF" : std::to_string(dist[u])) << ") ---" << std::endl;
+        std::cout << std::left << std::setw(10) << "Dinh"
+                  << std::setw(15) << "Trang thai"
+                  << std::setw(20) << "Duong di"
+                  << std::setw(10) << "Do dai" << std::endl;
+        std::cout << std::string(55, '-') << std::endl;
+
+        for (int i = 0; i < V; ++i) {
+             std::cout << std::left << std::setw(10) << i
+                       << std::setw(15) << (visited[i] ? "Da duyet" : "Chua duyet")
+                       << std::setw(20) << getPath(s, i, prev)
+                       << std::setw(10) << (dist[i] == INF ? "INF" : std::to_string(dist[i])) << std::endl;
+        }
+
+
         for (const auto& edge : adj[u]) {
             int v = edge.first;
             if (!visited[v]) {
                 visited[v] = true;
+                dist[v] = dist[u] + 1;
+                prev[v] = u;
                 queue.push(v);
             }
         }
     }
-    std::cout << std::endl;
+     std::cout << "\n--- KET QUA CUOI CUNG (BFS)---" << std::endl;
+    for(int i=0; i<V; ++i){
+        std::cout << "Duong di ngan nhat (theo so canh) tu " << s << " toi " << i << " la: " << getPath(s, i, prev) << " (Do dai: " << (dist[i] == INF ? "INF" : std::to_string(dist[i])) << ")" << std::endl;
+    }
 }
 
-void Graph::DFS_util(int u, std::vector<bool>& visited) {
+// --- Ham DFS duoc viet lai chi tiet ---
+void Graph::DFS_util(int u, std::vector<bool>& visited, std::vector<int>& prev, int& step, int s) {
     visited[u] = true;
-    std::cout << u << " ";
+    step++;
+    std::cout << "\n--- BUOC " << step << ": Duyet dinh " << u << " ---" << std::endl;
+    std::cout << std::left << std::setw(10) << "Dinh"
+              << std::setw(15) << "Trang thai"
+              << std::setw(20) << "Duong di" << std::endl;
+    std::cout << std::string(45, '-') << std::endl;
+
+    for (int i = 0; i < V; ++i) {
+        std::cout << std::left << std::setw(10) << i
+                  << std::setw(15) << (visited[i] ? "Da duyet" : "Chua duyet")
+                  << std::setw(20) << getPath(s, i, prev) << std::endl;
+    }
+
     for (const auto& edge : adj[u]) {
         int v = edge.first;
         if (!visited[v]) {
-            DFS_util(v, visited);
+            prev[v] = u;
+            DFS_util(v, visited, prev, step, s);
         }
     }
 }
@@ -63,10 +104,25 @@ void Graph::DFS_util(int u, std::vector<bool>& visited) {
 void Graph::DFS(int s) {
     std::cout << "\n--- Thuat toan DFS (bat dau tu " << s << ") ---" << std::endl;
     std::vector<bool> visited(V, false);
+    std::vector<int> prev(V, -1);
+    int step = 0;
+    DFS_util(s, visited, prev, step, s);
+
+    std::cout << "\n--- KET QUA CUOI CUNG (DFS)---" << std::endl;
     std::cout << "Thu tu duyet: ";
-    DFS_util(s, visited);
+    std::vector<int> path;
+    int curr = -1;
+    for(int i=0; i<V; ++i) {
+        if(visited[i]) {
+            std::cout << i << " ";
+        }
+    }
     std::cout << std::endl;
+    for(int i=0; i<V; ++i){
+         std::cout << "Duong di tim thay tu " << s << " toi " << i << " la: " << getPath(s, i, prev) << std::endl;
+    }
 }
+
 
 // --- Cac ham phan tich moi ---
 void Graph::isConnected_util(int u, std::vector<bool>& visited) {
@@ -176,6 +232,6 @@ void Graph::dijkstra(int src) {
     
     std::cout << "\n--- KET QUA CUOI CUNG ---" << std::endl;
     for(int i=0; i<V; ++i){
-        std::cout << "Duong di ngan nhat tu " << src << " toi " << i << " la: " << getPath(src, i, prev) << " (Do dai: " << dist[i] << ")" << std::endl;
+        std::cout << "Duong di ngan nhat tu " << src << " toi " << i << " la: " << getPath(src, i, prev) << " (Do dai: " << (dist[i] == INF ? "INF" : std::to_string(dist[i])) << ")" << std::endl;
     }
 }
