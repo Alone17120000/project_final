@@ -1,6 +1,6 @@
 #include "utils.h"
 
-// --- HÀM TRUNG GIAN ĐỂ TÌM SỐ ĐỈNH ---
+
 int get_num_vertices(const AdjacencyList& al) {
     if (al.empty()) return 0;
     int max_vertex = 0;
@@ -15,9 +15,7 @@ int get_num_vertices(const AdjacencyList& al) {
     return max_vertex + 1;
 }
 
-// --- HÀM CHUYỂN ĐỔI ĐỒ THỊ (12 converters) ---
 
-// 1. Từ Ma trận kề (AM)
 AdjacencyList am_to_al(const AdjacencyMatrix& am) {
     AdjacencyList al;
     for (size_t i = 0; i < am.size(); ++i) {
@@ -58,8 +56,6 @@ AdjacencyMap am_to_amap(const AdjacencyMatrix& am) {
     }
     return amap;
 }
-
-// 2. Từ Danh sách kề (AL)
 AdjacencyMatrix al_to_am(const AdjacencyList& al) {
     int num_vertices = get_num_vertices(al);
     AdjacencyMatrix am(num_vertices, std::vector<int>(num_vertices, 0));
@@ -75,8 +71,6 @@ AdjacencyMatrix al_to_am(const AdjacencyList& al) {
 }
 ExtendedAdjacencyList al_to_eal(const AdjacencyList& al) { return am_to_eal(al_to_am(al)); }
 AdjacencyMap al_to_amap(const AdjacencyList& al) { return am_to_amap(al_to_am(al)); }
-
-// 3. Từ DS Kề Mở Rộng (EAL)
 AdjacencyMatrix eal_to_am(const ExtendedAdjacencyList& eal) {
     int num_vertices = eal.size();
     AdjacencyMatrix am(num_vertices, std::vector<int>(num_vertices, 0));
@@ -91,8 +85,6 @@ AdjacencyMatrix eal_to_am(const ExtendedAdjacencyList& eal) {
 }
 AdjacencyList eal_to_al(const ExtendedAdjacencyList& eal) { return am_to_al(eal_to_am(eal)); }
 AdjacencyMap eal_to_amap(const ExtendedAdjacencyList& eal) { return am_to_amap(eal_to_am(eal)); }
-
-// 4. Từ Map Kề (AMap)
 AdjacencyMatrix amap_to_am(const AdjacencyMap& amap) {
     int num_vertices = amap.size();
     AdjacencyMatrix am(num_vertices, std::vector<int>(num_vertices, 0));
@@ -109,7 +101,7 @@ AdjacencyMatrix amap_to_am(const AdjacencyMap& amap) {
 AdjacencyList amap_to_al(const AdjacencyMap& amap) { return am_to_al(amap_to_am(amap)); }
 ExtendedAdjacencyList amap_to_eal(const AdjacencyMap& amap) { return am_to_eal(amap_to_am(amap)); }
 
-// --- HÀM CHUYỂN ĐỔI CÂY (6 converters) ---
+
 AdjacencyListTree ap_to_al_tree(const ParentArray& parents) {
     AdjacencyListTree adj;
     int num_nodes = parents.size();
@@ -224,7 +216,7 @@ ParentArray fcns_to_ap(const FCNS& fcns) {
     return al_tree_to_ap(adj, root);
 }
 
-// --- HÀM IN ẤN ---
+
 void print_am(const AdjacencyMatrix& matrix, const std::string& title) {
     std::cout << title << std::endl;
     for (size_t i=0; i < matrix.size(); ++i) {

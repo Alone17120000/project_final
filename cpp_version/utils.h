@@ -39,8 +39,6 @@ struct TED_Node {
 };
 
 
-
-// Đồ thị
 using AdjacencyMatrix = std::vector<std::vector<int>>;
 using AdjacencyList = std::map<int, std::vector<int>>;
 struct EAL_Data { std::vector<Edge> in; std::vector<Edge> out; };
@@ -48,16 +46,16 @@ using ExtendedAdjacencyList = std::map<int, EAL_Data>;
 struct AMap_Data { std::map<int, Edge> in; std::map<int, Edge> out; };
 using AdjacencyMap = std::map<int, AMap_Data>;
 
-// Cây
 using ParentArray = std::vector<int>;
 using FCNS = std::pair<std::vector<int>, std::vector<int>>;
 using AdjacencyListTree = std::map<int, std::vector<int>>;
 
 
+// Bài 1, 3
 std::vector<int> get_transpose(const std::vector<int>& p);
 void print_diagram(const std::vector<int>& p, const std::string& title);
 
-
+// Bài 4 - Đồ thị (12 hàm)
 AdjacencyList am_to_al(const AdjacencyMatrix& am);
 ExtendedAdjacencyList am_to_eal(const AdjacencyMatrix& am);
 AdjacencyMap am_to_amap(const AdjacencyMatrix& am);
@@ -71,7 +69,7 @@ AdjacencyMatrix amap_to_am(const AdjacencyMap& amap);
 AdjacencyList amap_to_al(const AdjacencyMap& amap);
 ExtendedAdjacencyList amap_to_eal(const AdjacencyMap& amap);
 
-
+// Bài 4 - Cây (6 hàm)
 AdjacencyListTree ap_to_al_tree(const ParentArray& parents);
 FCNS al_tree_to_fcns(const AdjacencyListTree& adj, int root);
 FCNS ap_to_fcns(const ParentArray& parents);
@@ -79,7 +77,7 @@ ParentArray al_tree_to_ap(const AdjacencyListTree& adj, int root);
 AdjacencyListTree fcns_to_al_tree(const FCNS& fcns);
 ParentArray fcns_to_ap(const FCNS& fcns);
 
-
+// Bài 4 - In ấn
 void print_am(const AdjacencyMatrix& matrix, const std::string& title);
 void print_al(const AdjacencyList& al, const std::string& title);
 void print_eal(const ExtendedAdjacencyList& eal, const std::string& title);

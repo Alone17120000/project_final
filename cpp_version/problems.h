@@ -17,7 +17,6 @@ void solve_problem_8_10();
 void solve_problem_11_13();
 void solve_problem_14_16();
 
-
 int countPartitions(int n, int k);
 int countPartitionsMax(int n, int k);
 

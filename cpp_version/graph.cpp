@@ -65,7 +65,7 @@ void Graph::BFS(int s) {
     for(size_t i=0; i<traversal_order.size(); ++i) std::cout << traversal_order[i] << " ";
     std::cout << std::endl;
     for(int i=0; i<V; ++i){
-        std::cout << "Duong di ngan nhat (theo so canh) tu " << s << " toi " << i << " la: " << getPath(s, i, prev) << " (Do dai: " << (dist[i] == INF ? "INF" : std::to_string(dist[i])) << ")" << std::endl;
+        std::cout << "Duong di ngan nhat (theo so canh) tu " << s << " toi " << i << " la: " << getPath(s, i, prev) << " (Do dai: " << (dist.count(i) && dist[i] != INF ? std::to_string(dist[i]) : "INF") << ")" << std::endl;
     }
 }
 
@@ -121,7 +121,7 @@ bool Graph::isConnected() {
             break;
         }
     }
-    if (start_node == -1) return true; // Đồ thị không có cạnh nào
+    if (start_node == -1) return true;
 
     isConnected_util(start_node, visited);
     for (int i = 0; i < V; i++) {
@@ -205,7 +205,7 @@ void Graph::dijkstra(int src) {
         int d = pq.top().first;
         pq.pop();
 
-        if (d > dist[u]) continue;
+        if (dist.count(u) && d > dist[u]) continue;
 
         const std::list<std::pair<int, int>>& neighbors = getAdj(u);
         for (std::list<std::pair<int, int>>::const_iterator it = neighbors.begin(); it != neighbors.end(); ++it) {

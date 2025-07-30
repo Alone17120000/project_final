@@ -1,9 +1,12 @@
 #include "problems.h"
 #include "utils.h"
 #include "graph.h"
-#include <numeric> // Dùng cho std::iota
-#include <algorithm> // Dùng cho std::next_permutation
-
+#include <iterator> 
+#include <map>
+#include <set>
+#include <memory>
+#include <algorithm> 
+#include <iomanip> 
 // --- Bài toán 1 ---
 void find_partitions(int n, int k, int max_val, std::vector<int>& p) {
     if (k == 0) {
@@ -43,7 +46,7 @@ void solve_problem_1() {
     }
 }
 
-// --- Bài toán 2 (ĐÃ SỬA) ---
+// --- Bài toán 2 ---
 int countPartitions(int n, int k) {
     if (k <= 0 || n <= 0 || k > n) return 0;
     std::vector<std::vector<int>> dp(n + 1, std::vector<int>(k + 1, 0));
@@ -56,7 +59,6 @@ int countPartitions(int n, int k) {
     }
     return dp[n][k];
 }
-
 int countPartitionsMax(int n, int k) {
     if (k <= 0 || n <= 0 || k > n) return 0;
     int target_sum = n - k;
@@ -74,7 +76,6 @@ int countPartitionsMax(int n, int k) {
     }
     return dp[target_sum][k];
 }
-
 void solve_problem_2() {
     int n, k;
     std::cout << "\n--- Bai toan 2: So sanh p_k(n) va p_max(n,k) ---" << std::endl;
@@ -84,7 +85,6 @@ void solve_problem_2() {
     std::cin >> k;
     int p_k_n = countPartitions(n, k);
     int p_max_n_k = countPartitionsMax(n, k);
-
     std::cout << "So phan hoach cua " << n << " thanh " << k << " phan (p_k(n)): " << p_k_n << std::endl;
     std::cout << "So phan hoach cua " << n << " co phan tu lon nhat la " << k << " (p_max(n,k)): " << p_max_n_k << std::endl;
     if (p_k_n == p_max_n_k) {
@@ -94,17 +94,15 @@ void solve_problem_2() {
     }
 }
 
-// --- Bài toán 3 (ĐÃ SỬA) ---
+// --- Bài toán 3 ---
 bool is_self_conjugate(const std::vector<int>& p) {
     if (p.empty()) return true;
     return p == get_transpose(p);
 }
 void find_sc_partitions_k_parts(int n, int k, int max_val, std::vector<int>& p, std::vector<std::vector<int>>& results) {
     if (k == 0) {
-        if (n == 0) {
-            if (is_self_conjugate(p)) {
-                results.push_back(p);
-            }
+        if (n == 0 && is_self_conjugate(p)) {
+            results.push_back(p);
         }
         return;
     }
@@ -121,9 +119,7 @@ void find_odd_distinct_partitions(int n, int max_odd, std::vector<int>& p, int& 
         count++;
         return;
     }
-    if (n < 0 || max_odd < 1) {
-        return;
-    }
+    if (n < 0 || max_odd < 1) return;
     find_odd_distinct_partitions(n, max_odd - 2, p, count);
     p.push_back(max_odd);
     find_odd_distinct_partitions(n - max_odd, max_odd - 2, p, count);
@@ -160,15 +156,13 @@ void solve_problem_3() {
     std::cout << "=> So luong phan hoach tu lien hop cua " << n << " la: " << odd_distinct_count << std::endl;
 }
 
-// --- Bài toán 4 (ĐÃ SỬA) ---
+// --- Bài toán 4 ---
 void solve_problem_4() {
     std::cout << "\n--- Bai toan 4: Chuyen doi bieu dien do thi va cay ---" << std::endl;
-    std::cout << "\n--- I. DO THI ---" << std::endl;
-
+    std::cout << "\n--- I. DO THI (12 converters) ---" << std::endl;
     AdjacencyMatrix am_simple = { {0, 1, 1, 0}, {1, 0, 0, 1}, {1, 0, 0, 1}, {0, 1, 1, 0} };
     AdjacencyMatrix am_multi = { {0, 2, 0}, {2, 0, 1}, {0, 1, 0} };
     AdjacencyMatrix am_general = { {0, 1, 0}, {1, 1, 1}, {0, 1, 0} };
-
     std::cout << "\n** Truong hop 1: Don do thi **" << std::endl;
     print_am(am_simple, "Dau vao (Ma tran ke):");
     AdjacencyList al_s = am_to_al(am_simple);
@@ -178,30 +172,25 @@ void solve_problem_4() {
     AdjacencyMap amap_s = am_to_amap(am_simple);
     print_amap(amap_s, "\n-> AM sang AMap:");
     print_am(al_to_am(al_s), "\n-> (Kiem tra) AL sang AM:");
-
     std::cout << "\n\n** Truong hop 2: Da do thi **" << std::endl;
     print_am(am_multi, "Dau vao (Ma tran ke):");
     ExtendedAdjacencyList eal_m = am_to_eal(am_multi);
     print_eal(eal_m, "\n-> AM sang EAL:");
     print_al(eal_to_al(eal_m), "\n-> (Kiem tra) EAL sang AL:");
-
     std::cout << "\n\n** Truong hop 3: Do thi tong quat **" << std::endl;
     print_am(am_general, "Dau vao (Ma tran ke):");
     AdjacencyMap amap_g = am_to_amap(am_general);
     print_amap(amap_g, "\n-> AM sang AMap:");
     print_am(amap_to_am(amap_g), "\n-> (Kiem tra) AMap sang AM:");
-
-    std::cout << "\n\n--- II. CAY ---" << std::endl;
+    std::cout << "\n\n--- II. CAY (6 converters) ---" << std::endl;
     ParentArray ap_in(6);
     ap_in[0] = -1; ap_in[1] = 0; ap_in[2] = 0; ap_in[3] = 1; ap_in[4] = 1; ap_in[5] = 2;
     AdjacencyListTree al_in = ap_to_al_tree(ap_in);
     FCNS fcns_in = ap_to_fcns(ap_in);
-
     std::cout << "\n** Dau vao **" << std::endl;
     print_ap(ap_in, "Mang cha (AP):");
     print_al_tree(al_in, "Danh sach ke (AL_Tree):");
     print_fcns(fcns_in, "Con ca - Em ke (FCNS):");
-
     std::cout << "\n** Kiem tra chuyen doi **" << std::endl;
     print_ap(fcns_to_ap(al_tree_to_fcns(ap_to_al_tree(ap_in), 0)), "-> Kiem tra (AP -> AL -> FCNS -> AP):");
     print_fcns(al_tree_to_fcns(fcns_to_al_tree(ap_to_fcns(ap_in)), 0), "-> Kiem tra (AP -> FCNS -> AL -> FCNS):");
@@ -209,184 +198,334 @@ void solve_problem_4() {
 }
 
 // --- Bài toán 5 ---
-// Problem 1.1: Tính kích thước (số cạnh) của đồ thị
 void problem_1_1() {
     std::cout << "\n--- Problem 1.1: Tinh so canh cua do thi ---" << std::endl;
-    
-    auto size_of_Kn = [](int n) {
-        if (n < 2) return 0;
-        return n * (n - 1) / 2;
-    };
-
-    auto size_of_Kpq = [](int p, int q) {
-        return p * q;
-    };
-
-    int n = 5;
-    int p = 3, q = 4;
+    auto size_of_Kn = [](int n) { return n < 2 ? 0 : n * (n - 1) / 2; };
+    auto size_of_Kpq = [](int p, int q) { return p * q; };
+    int n = 5, p = 3, q = 4;
     std::cout << "  - So canh cua K_" << n << ": " << size_of_Kn(n) << std::endl;
     std::cout << "  - So canh cua K_" << p << "," << q << ": " << size_of_Kpq(p, q) << std::endl;
 }
-
-// Problem 1.2: Xác định đồ thị hai phía
 void problem_1_2() {
     std::cout << "\n--- Problem 1.2: Xac dinh do thi hai phia ---" << std::endl;
-    
-    auto is_Cn_bipartite = [](int n) {
-        return n > 0 && n % 2 == 0;
-    };
-        
-    auto is_Kn_bipartite = [](int n) {
-        return n > 0 && n <= 2;
-    };
-        
+    auto is_Cn_bipartite = [](int n) { return n > 0 && n % 2 == 0; };
+    auto is_Kn_bipartite = [](int n) { return n > 0 && n <= 2; };
     std::cout << "  - C_4 la do thi hai phia: " << (is_Cn_bipartite(4) ? "Dung" : "Sai") << std::endl;
     std::cout << "  - C_5 la do thi hai phia: " << (is_Cn_bipartite(5) ? "Dung" : "Sai") << std::endl;
     std::cout << "  - K_2 la do thi hai phia: " << (is_Kn_bipartite(2) ? "Dung" : "Sai") << std::endl;
     std::cout << "  - K_3 la do thi hai phia: " << (is_Kn_bipartite(3) ? "Dung" : "Sai") << std::endl;
 }
-
-// Problem 1.3: Liệt kê cây khung
 void problem_1_3() {
     std::cout << "\n--- Problem 1.3: Liet ke cay khung ---" << std::endl;
-    
     int num_vertices = 7;
-    std::vector<std::pair<int, int>> edges;
-    edges.push_back({0,1}); edges.push_back({0,2}); edges.push_back({1,3});
-    edges.push_back({1,4}); edges.push_back({2,3}); edges.push_back({2,5});
-    edges.push_back({3,4}); edges.push_back({3,5}); edges.push_back({4,6});
-    edges.push_back({5,6});
-    
+    std::vector<std::pair<int, int> > edges;
+    edges.push_back(std::make_pair(0,1)); edges.push_back(std::make_pair(0,2)); edges.push_back(std::make_pair(1,3));
+    edges.push_back(std::make_pair(1,4)); edges.push_back(std::make_pair(2,3)); edges.push_back(std::make_pair(2,5));
+    edges.push_back(std::make_pair(3,4)); edges.push_back(std::make_pair(3,5)); edges.push_back(std::make_pair(4,6));
+    edges.push_back(std::make_pair(5,6));
     int num_edges_in_tree = num_vertices - 1;
-    
-    std::vector<int> p(edges.size());
-    std::iota(p.begin(), p.end(), 0);
-
-    std::vector<std::vector<std::pair<int, int>>> spanning_trees;
     std::vector<bool> v(edges.size());
     std::fill(v.begin() + num_edges_in_tree, v.end(), true);
-
+    int count = 0;
     do {
         std::vector<std::pair<int, int>> current_combo;
-        for (int i = 0; i < edges.size(); ++i) {
-            if (!v[i]) {
-                current_combo.push_back(edges[i]);
-            }
-        }
-
-        // Kiểm tra tính liên thông bằng BFS
-        std::map<int, std::list<int>> adj;
-        for(size_t i = 0; i < current_combo.size(); ++i) {
-            adj[current_combo[i].first].push_back(current_combo[i].second);
-            adj[current_combo[i].second].push_back(current_combo[i].first);
-        }
-        
-        std::set<int> visited;
-        std::queue<int> q;
-        q.push(0);
-        visited.insert(0);
-        
-        while(!q.empty()){
-            int u = q.front(); q.pop();
-            for (std::list<int>::iterator it = adj[u].begin(); it != adj[u].end(); ++it) {
-                if (visited.find(*it) == visited.end()) {
-                    visited.insert(*it);
-                    q.push(*it);
-                }
-            }
-        }
-        
-        if (visited.size() == num_vertices) {
-            spanning_trees.push_back(current_combo);
+        for (int i = 0; i < edges.size(); ++i) if (!v[i]) current_combo.push_back(edges[i]);
+        Graph g(num_vertices);
+        for(size_t i = 0; i < current_combo.size(); ++i) g.addEdge(current_combo[i].first, current_combo[i].second);
+        if (g.isConnected()) {
+            count++;
         }
     } while (std::next_permutation(v.begin(), v.end()));
-
-    std::cout << "  - Tim thay " << spanning_trees.size() << " cay khung cho do thi trong Hinh 1.30." << std::endl;
-    std::cout << "  - Vi du 3 cay khung dau tien:" << std::endl;
-    for (size_t i = 0; i < std::min((size_t)3, spanning_trees.size()); ++i) {
-        std::cout << "    + Cay khung " << i + 1 << ": ";
-        for (size_t j = 0; j < spanning_trees[i].size(); ++j) {
-            std::cout << "(" << spanning_trees[i][j].first << "," << spanning_trees[i][j].second << ") ";
-        }
-        std::cout << std::endl;
-    }
+    std::cout << "  - Tong so cay khung tim thay: " << count << std::endl;
 }
-
-// Problem 1.6: Kiểm tra một đồ thị có phải là cây hay không
 bool is_tree(Graph& g) {
     int v = g.getV();
     if (v == 0) return true;
-
-    // 1. Kiểm tra tính liên thông
-    if (!g.isConnected()) {
-        return false;
-    }
-
-    // 2. Kiểm tra số cạnh = số đỉnh - 1
+    if (!g.isConnected()) return false;
     int edge_count = 0;
-    for (int i = 0; i < v; ++i) {
-        edge_count += g.getAdj(i).size();
-    }
-    // Chia 2 vì mỗi cạnh được đếm 2 lần trong đồ thị vô hướng
-    if (edge_count / 2 != v - 1) {
-        return false;
-    }
-
-    return true;
+    for (int i = 0; i < v; ++i) edge_count += g.getAdj(i).size();
+    return (edge_count / 2 == v - 1);
 }
-
 void problem_1_6() {
     std::cout << "\n--- Problem 1.6: Kiem tra mot do thi co phai la cay ---" << std::endl;
     Graph tree_graph(5);
     tree_graph.addEdge(0, 1); tree_graph.addEdge(0, 2); tree_graph.addEdge(1, 3); tree_graph.addEdge(1, 4);
-    
-    Graph non_tree_graph(3); // Có chu trình
+    Graph non_tree_graph(3);
     non_tree_graph.addEdge(0, 1); non_tree_graph.addEdge(1, 2); non_tree_graph.addEdge(2, 0);
-    
     std::cout << "  - Do thi 1 co phai la cay? -> " << (is_tree(tree_graph) ? "Dung" : "Sai") << std::endl;
     std::cout << "  - Do thi 2 co phai la cay? -> " << (is_tree(non_tree_graph) ? "Dung" : "Sai") << std::endl;
 }
-
-// Exercise 1.7: Sinh cây nhị phân hoàn chỉnh
 void exercise_1_7() {
     std::cout << "\n--- Exercise 1.7: Sinh cay nhi phan hoan chinh ---" << std::endl;
-    
     int n_nodes = 7;
-    Graph complete_binary_tree(n_nodes);
+    Graph g(n_nodes);
     for(int i = 0; i < n_nodes; ++i) {
-        int left = 2 * i + 1;
-        int right = 2 * i + 2;
-        if (left < n_nodes) complete_binary_tree.addEdge(i, left);
-        if (right < n_nodes) complete_binary_tree.addEdge(i, right);
+        if (2*i + 1 < n_nodes) g.addEdge(i, 2*i + 1);
+        if (2*i + 2 < n_nodes) g.addEdge(i, 2*i + 2);
     }
-    
     std::cout << "  - Cay nhi phan hoan chinh voi " << n_nodes << " dinh:" << std::endl;
-    complete_binary_tree.print();
+    g.print();
 }
-
-
-// Hàm chính để chạy các bài toán
 void solve_problem_5() {
     std::cout << "\n=====================================================" << std::endl;
     std::cout << "                 BAI TOAN 5" << std::endl;
     std::cout << "=====================================================" << std::endl;
-    
-    // Problems [Val21, p. 39]
     problem_1_1();
     problem_1_2();
     problem_1_3();
     problem_1_6();
-    
-    // Exercises [Val21, p. 40]
     exercise_1_7();
 }
+
 // --- Bài toán 6 ---
-void solve_problem_6() {
-    std::cout << "\n--- Bai toan 6: Tree Edit Distance ---" << std::endl;
-    std::cout << "  (Bai toan 6 hien tai phuc tap, logic C++ se duoc hoan thien sau)" << std::endl;
+
+namespace Problem6 {
+    // Biến toàn cục cho các phương pháp, được reset mỗi lần gọi
+    std::vector<TED_Node*> postorder1, postorder2;
+    int min_cost_global;
+
+    // Cấu trúc để làm key cho map trong D&C
+    struct NodeRange {
+        int i1, j1, i2, j2;
+        bool operator<(const NodeRange& other) const {
+            if (i1 != other.i1) return i1 < other.i1;
+            if (j1 != other.j1) return j1 < other.j1;
+            if (i2 != other.i2) return i2 < other.i2;
+            return j2 < other.j2;
+        }
+    };
+    std::map<NodeRange, int> memo; // Bộ nhớ cho D&C/QHD
 }
 
-// --- Bài toán 7 (ĐÃ SỬA) ---
+// --- Các hàm tiền xử lý ---
+void postorder_traverse_and_id(TED_Node* node, std::vector<TED_Node*>& nodes) {
+    if (!node) return;
+    for (size_t i = 0; i < node->children.size(); ++i) {
+        postorder_traverse_and_id(node->children[i].get(), nodes);
+    }
+    node->postorder_id = nodes.size();
+    nodes.push_back(node);
+}
+
+void calculate_leftmost_leaf_ids(const std::vector<TED_Node*>& nodes) {
+    for (size_t i = 0; i < nodes.size(); ++i) {
+        TED_Node* node = nodes[i];
+        if (node->children.empty()) {
+            node->leftmost_leaf_id = node->postorder_id;
+        } else {
+            // Sửa lại logic: leftmost leaf của một node là leftmost leaf của con đầu tiên
+            node->leftmost_leaf_id = nodes[node->children[0]->postorder_id]->leftmost_leaf_id;
+        }
+    }
+}
+
+// --- (a) Backtracking ---
+void backtrack_recursive(int k, int current_cost, std::map<TED_Node*, TED_Node*>& mapping, std::set<TED_Node*>& used_nodes) {
+    using namespace Problem6;
+    if (k == postorder1.size()) {
+        int final_cost = current_cost + (postorder2.size() - used_nodes.size());
+        if (final_cost < min_cost_global) {
+            min_cost_global = final_cost;
+        }
+        return;
+    }
+
+    TED_Node* u = postorder1[k];
+
+    // Lựa chọn 1: Xóa u
+    backtrack_recursive(k + 1, current_cost + 1, mapping, used_nodes);
+
+    // Lựa chọn 2: Ánh xạ u sang v
+    for (size_t i = 0; i < postorder2.size(); ++i) {
+        TED_Node* v = postorder2[i];
+        if (used_nodes.find(v) == used_nodes.end()) { // Nếu v chưa được sử dụng
+            int sub_cost = (u->label == v->label) ? 0 : 1;
+            mapping[u] = v;
+            used_nodes.insert(v);
+            backtrack_recursive(k + 1, current_cost + sub_cost, mapping, used_nodes);
+            used_nodes.erase(v); // Quay lui
+            mapping.erase(u);
+        }
+    }
+}
+int solve_backtracking() {
+    using namespace Problem6;
+    min_cost_global = postorder1.size() + postorder2.size();
+    std::map<TED_Node*, TED_Node*> mapping;
+    std::set<TED_Node*> used_nodes;
+    backtrack_recursive(0, 0, mapping, used_nodes);
+    return min_cost_global;
+}
+
+
+// --- (b) Branch-&-Bound ---
+void branch_and_bound_recursive(int k, int current_cost, std::map<TED_Node*, TED_Node*>& mapping, std::set<TED_Node*>& used_nodes) {
+    using namespace Problem6;
+    if (current_cost >= min_cost_global) { // Cắt tỉa
+        return;
+    }
+    if (k == postorder1.size()) {
+        int final_cost = current_cost + (postorder2.size() - used_nodes.size());
+        if (final_cost < min_cost_global) {
+            min_cost_global = final_cost;
+        }
+        return;
+    }
+
+    TED_Node* u = postorder1[k];
+
+    // Lựa chọn 1: Xóa u
+    branch_and_bound_recursive(k + 1, current_cost + 1, mapping, used_nodes);
+
+    // Lựa chọn 2: Ánh xạ u sang v
+    for (size_t i = 0; i < postorder2.size(); ++i) {
+        TED_Node* v = postorder2[i];
+        if (used_nodes.find(v) == used_nodes.end()) {
+            int sub_cost = (u->label == v->label) ? 0 : 1;
+            mapping[u] = v;
+            used_nodes.insert(v);
+            branch_and_bound_recursive(k + 1, current_cost + sub_cost, mapping, used_nodes);
+            used_nodes.erase(v);
+            mapping.erase(u);
+        }
+    }
+}
+int solve_branch_and_bound() {
+    using namespace Problem6;
+    min_cost_global = postorder1.size() + postorder2.size();
+    std::map<TED_Node*, TED_Node*> mapping;
+    std::set<TED_Node*> used_nodes;
+    branch_and_bound_recursive(0, 0, mapping, used_nodes);
+    return min_cost_global;
+}
+
+
+// --- (c) Divide-&-Conquer ---
+int solve_divide_and_conquer_recursive(int i, int j) {
+    using namespace Problem6;
+    if (i == -1 && j == -1) return 0;
+    if (i == -1) return j + 1;
+    if (j == -1) return i + 1;
+
+    TED_Node* u = postorder1[i];
+    TED_Node* v = postorder2[j];
+    int cost_sub = (u->label == v->label) ? 0 : 1;
+
+    int cost_del = solve_divide_and_conquer_recursive(i - 1, j) + 1;
+    int cost_ins = solve_divide_and_conquer_recursive(i, j - 1) + 1;
+    int cost_rep = solve_divide_and_conquer_recursive(i - 1, j - 1) + cost_sub;
+
+    return std::min({cost_del, cost_ins, cost_rep});
+}
+int solve_divide_and_conquer() {
+    using namespace Problem6;
+    return solve_divide_and_conquer_recursive(postorder1.size() - 1, postorder2.size() - 1);
+}
+
+
+// --- (d) Dynamic Programming ---
+int solve_dynamic_programming() {
+    using namespace Problem6;
+    int n1 = postorder1.size();
+    int n2 = postorder2.size();
+    std::vector<std::vector<int>> fd(n1 + 1, std::vector<int>(n2 + 1, 0));
+
+    // Khởi tạo hàng và cột 0
+    for (int i = 1; i <= n1; i++) fd[i][0] = i;
+    for (int j = 1; j <= n2; j++) fd[0][j] = j;
+
+    // Tính toán ma trận
+    for (int i = 1; i <= n1; i++) {
+        for (int j = 1; j <= n2; j++) {
+            TED_Node* u = postorder1[i - 1];
+            TED_Node* v = postorder2[j - 1];
+            int cost_sub = (u->label == v->label) ? 0 : 1;
+
+            if (u->leftmost_leaf_id == postorder1[i - 1]->leftmost_leaf_id &&
+                v->leftmost_leaf_id == postorder2[j - 1]->leftmost_leaf_id)
+            {
+                int cost_del = fd[i - 1][j] + 1;
+                int cost_ins = fd[i][j - 1] + 1;
+                int cost_rep = fd[i - 1][j - 1] + cost_sub;
+                fd[i][j] = std::min({cost_del, cost_ins, cost_rep});
+            } else {
+                int i_lm = u->leftmost_leaf_id;
+                int j_lm = v->leftmost_leaf_id;
+
+                int term_del = fd[i - 1][j] + 1;
+                int term_ins = fd[i][j - 1] + 1;
+                // Công thức Zhang-Shasha gốc
+                int term_rep = fd[i_lm - 1][j_lm - 1] + (fd[i-1][j-1] - fd[i_lm-1][j_lm-1]) + cost_sub;
+                fd[i][j] = std::min({term_del, term_ins, term_rep});
+            }
+        }
+    }
+    
+    std::cout << "\n  Bang quy hoach dong (forest_dist) fd[i][j]:" << std::endl;
+    std::cout << "        ";
+    for(int j=0; j<n2; ++j) std::cout << std::setw(4) << postorder2[j]->label << " ";
+    std::cout << std::endl;
+    for (int i = 0; i <= n1; ++i) {
+        if (i > 0) std::cout << std::setw(4) << postorder1[i-1]->label << " | ";
+        else std::cout << "   _ | ";
+        for (int j = 0; j <= n2; ++j) {
+            std::cout << std::setw(4) << fd[i][j] << " ";
+        }
+        std::cout << std::endl;
+    }
+    
+    return fd[n1][n2];
+}
+
+
+// --- HÀM CHÍNH CHO BÀI 6 ---
+void solve_problem_6() {
+    std::cout << "\n--- Bai toan 6: Tree Edit Distance ---" << std::endl;
+    std::cout << "So sanh T1 = f(a,c) va T2 = f(b,c)" << std::endl;
+    
+    // Tạo cây T1
+    std::unique_ptr<TED_Node> t1_f(new TED_Node("f"));
+    t1_f->children.push_back(std::unique_ptr<TED_Node>(new TED_Node("a")));
+    t1_f->children.push_back(std::unique_ptr<TED_Node>(new TED_Node("c")));
+
+    // Tạo cây T2
+    std::unique_ptr<TED_Node> t2_f(new TED_Node("f"));
+    t2_f->children.push_back(std::unique_ptr<TED_Node>(new TED_Node("b")));
+    t2_f->children.push_back(std::unique_ptr<TED_Node>(new TED_Node("c")));
+
+    // Tiền xử lý cây một lần
+    // <<< SỬA LỖI TẠI ĐÂY: Sửa postorder_nodes1 thành postorder1 >>>
+    Problem6::postorder1.clear(); 
+    Problem6::postorder2.clear();
+    postorder_traverse_and_id(t1_f.get(), Problem6::postorder1);
+    postorder_traverse_and_id(t2_f.get(), Problem6::postorder2);
+    
+    // Tính toán leftmost_leaf_ids sau khi có postorder traversal
+    calculate_leftmost_leaf_ids(Problem6::postorder1);
+    calculate_leftmost_leaf_ids(Problem6::postorder2);
+    
+    std::cout << "\n(a) Giai bang Backtracking:" << std::endl;
+    int distance_bt = solve_backtracking();
+    std::cout << "   Khoang cach sua cay la: " << distance_bt << std::endl;
+
+    std::cout << "\n(b) Giai bang Branch-&-Bound:" << std::endl;
+    int distance_bnb = solve_branch_and_bound();
+    std::cout << "   Khoang cach sua cay la: " << distance_bnb << std::endl;
+
+    std::cout << "\n(c) Giai bang Divide-&-Conquer (De quy co ban):" << std::endl;
+    int distance_dc = solve_divide_and_conquer();
+    std::cout << "   Khoang cach sua cay la: " << distance_dc << std::endl;
+
+    std::cout << "\n(d) Giai bang Dynamic Programming (Thuat toan Zhang-Shasha):" << std::endl;
+    int distance_dp = solve_dynamic_programming();
+    std::cout << "   Khoang cach sua cay la: " << distance_dp << std::endl;
+
+    std::cout << "\n=> Ket qua cuoi cung (tu DP):" << std::endl;
+    std::cout << "   Chi phi toi thieu la 1, tuong ung voi viec thay the nhan 'a' bang 'b'" << std::endl;
+}
+
+
+// --- Bài toán 7 ---
 void preorder_traversal(TreeNode* root) {
     if (root == NULL) return;
     std::cout << root->val << " ";
@@ -419,7 +558,6 @@ void top_down_traversal(TreeNode* root) {
 }
 void solve_problem_7() {
     std::cout << "\n--- Bai toan 7: Duyet Cay ---" << std::endl;
-    // Sửa lại để tương thích C++11 (thay std::make_unique)
     std::unique_ptr<TreeNode> root(new TreeNode(1));
     root->left.reset(new TreeNode(2));
     root->right.reset(new TreeNode(3));
@@ -433,7 +571,7 @@ void solve_problem_7() {
     std::cout << "Top-down (BFS):"; top_down_traversal(root.get()); std::cout << std::endl;
 }
 
-// --- Bài toán 8-10 (Gộp và sửa) ---
+// --- Bài toán 8-10 ---
 void solve_problem_8_10() {
     std::cout << "\n--- Bai toan 8: BFS tren Do thi don ---" << std::endl;
     Graph g8(4); g8.addEdge(0, 1); g8.addEdge(0, 2); g8.addEdge(1, 3);
@@ -449,8 +587,7 @@ void solve_problem_8_10() {
     g_dir.addEdge(0, 1); g_dir.addEdge(0, 2); g_dir.addEdge(1, 3); g_dir.addEdge(3, 0);
     g_dir.analyzeGraph(); g_dir.BFS(0);
 }
-
-// --- Bài toán 11-13 (Gộp và sửa) ---
+// --- Bài toán 11-13 ---
 void solve_problem_11_13() {
     std::cout << "\n--- Bai toan 11: DFS tren Do thi don ---" << std::endl;
     Graph g11(4); g11.addEdge(0, 1); g11.addEdge(0, 2); g11.addEdge(1, 3);
@@ -466,8 +603,7 @@ void solve_problem_11_13() {
     g_dir.addEdge(0, 1); g_dir.addEdge(1, 2); g_dir.addEdge(2, 0); g_dir.addEdge(2, 3); g_dir.addEdge(3, 3);
     g_dir.analyzeGraph(); g_dir.DFS(2);
 }
-
-// --- Bài toán 14-16 (Gộp) ---
+// --- Bài toán 14-16 ---
 void solve_problem_14_16() {
     std::cout << "\n--- Bai toan 14: Dijkstra tren Do thi don ---" << std::endl;
     Graph g(9);

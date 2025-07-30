@@ -1,6 +1,6 @@
 #include "problems.h"
 #include <iostream>
-#include <limits> 
+#include <limits> // Dùng cho việc xử lý lỗi nhập liệu
 
 void print_menu() {
     std::cout << "\n\n==============================================" << std::endl;
@@ -11,16 +11,16 @@ void print_menu() {
     std::cout << "  2. Bai toan 2" << std::endl;
     std::cout << "  3. Bai toan 3" << std::endl;
     std::cout << "Do an 5: Duyet Do Thi & Cay" << std::endl;
-    std::cout << "  4. Bai toan 4" << std::endl;
-    std::cout << "  5. Bai toan 5" << std::endl;
-    std::cout << "  6. Bai toan 6" << std::endl;
-    std::cout << "  7. Bai toan 7" << std::endl;
+    std::cout << "  4. Bai toan 4: Chuyen doi bieu dien do thi & cay" << std::endl;
+    std::cout << "  5. Bai toan 5: Lam bai tap trong sach [Val21]" << std::endl;
+    std::cout << "  6. Bai toan 6: Tree Edit Distance" << std::endl;
+    std::cout << "  7. Bai toan 7: Duyet Cay" << std::endl;
     std::cout << "  8. Bai toan 8-10: Tim kiem theo chieu rong (BFS)" << std::endl;
     std::cout << "  11. Bai toan 11-13: Tim kiem theo chieu sau (DFS)" << std::endl;
     std::cout << "  14. Bai toan 14-16: Thuat toan Dijkstra" << std::endl;
     std::cout << "  0. Thoat" << std::endl;
     std::cout << "----------------------------------------------" << std::endl;
-    std::cout << "chon mot bai toan: ";
+    std::cout << " chon mot bai toan: ";
 }
 
 int main() {
@@ -29,9 +29,8 @@ int main() {
         print_menu();
         std::cin >> choice;
 
-        // Xử lý lỗi nhập liệu nếu người dùng nhập chữ
         while (std::cin.fail()) {
-            std::cout << "Vui long nhap mot so nguyen hop le." << std::endl;
+            std::cout << " nhap mot so nguyen hop le." << std::endl;
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             print_menu();
@@ -62,7 +61,7 @@ int main() {
                 solve_problem_14_16();
                 break;
             case 0: std::cout << "Thanks!" << std::endl; break;
-            default: std::cout << "Lua chon khong hop le. Vui long chon lai." << std::endl; break;
+            default: std::cout << " Vui long chon lai." << std::endl; break;
         }
     } while (choice != 0);
 
